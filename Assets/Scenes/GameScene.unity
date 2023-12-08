@@ -654,6 +654,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6821cb29dac5def43a5f7b953954f949, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cinemachineVirtualCamera: {fileID: 1363794225}
 --- !u!114 &1117702499 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8537352691926021519, guid: 897c285f72b51f44da55ea714e10a0ea, type: 3}
