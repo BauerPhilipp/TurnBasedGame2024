@@ -30,6 +30,7 @@ public class GridObject
     public void AddUnit(Unit unit) 
     {
         unitList.Add(unit);
+        //Debug.Log(unit.GetGridPosition());
     }
 
     public void RemoveUnit(Unit unit)
@@ -41,4 +42,10 @@ public class GridObject
     {
         return unitList;
     }
+
+    public bool HasAnyUnit()
+    {
+        return unitList.Count > 0;
+    }
+
 }
