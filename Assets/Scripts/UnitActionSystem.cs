@@ -2,12 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UnitActionSystem : MonoBehaviour
 {
     public static UnitActionSystem Instance {  get; private set; }
 
     public event EventHandler OnSelectedUnitChanged;
+    public event EventHandler OnSelectedActionChanged;
+
 
     [SerializeField] private LayerMask unitLayerMask;
     [SerializeField] private Unit selectedUnit;
@@ -34,28 +37,27 @@ public class UnitActionSystem : MonoBehaviour
     private void Update()
     {
         if (isBusy) { return; }
+        if(EventSystem.current.IsPointerOverGameObject()) { return; }
+
+        HandleSelectedAction();
+
+    }
+
+    private void HandleSelectedAction()
+    {
         if (Input.GetMouseButtonDown(0))
         {
-            if(TryHandleUnitSelection()) return;
+            if (TryHandleUnitSelection()) return;
 
             GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
 
-            if(selectedUnit.GetMoveAction().IsValidActionGridPosition(mouseGridPosition))
+            if (selectedAction.IsValidActionGridPosition(mouseGridPosition))
             {
-                SetBusy();
-                selectedUnit.GetMoveAction().Move(mouseGridPosition, ClearBusy);
+                selectedAction.TakeAction(mouseGridPosition, ClearBusy);
+
             }
-        }
-        if (Input.GetMouseButtonDown(1))
-        {
-            SetBusy();
-            selectedUnit.GetSpinAction().Spin(ClearBusy);
-        }
-    }
 
-    private void HandleTheSelectedAction()
-    {
-
+        }
     }
 
 
@@ -76,6 +78,11 @@ public class UnitActionSystem : MonoBehaviour
             {
                 if (raycastHit.transform.TryGetComponent<Unit>(out Unit unit))
                 {
+                    if (unit == selectedUnit)
+                    {
+                        return false;
+                    }
+                    
                     SetSelectedUnit(unit);
                     return true;
                 }
@@ -93,6 +100,8 @@ public class UnitActionSystem : MonoBehaviour
     public void SetSelectedAction(BaseAction baseAction)
     {
         selectedAction = baseAction;
+
+        OnSelectedActionChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public Unit GetSelectedUnit()
@@ -100,5 +109,9 @@ public class UnitActionSystem : MonoBehaviour
         return selectedUnit;
     }
 
+    public BaseAction GetSelectedAction()
+    {
+        return selectedAction;
+    }
 
 }
