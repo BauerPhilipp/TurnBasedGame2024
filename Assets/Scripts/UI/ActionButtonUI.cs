@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using TMPro;
 
 public class ActionButtonUI : MonoBehaviour
 {
@@ -19,7 +18,6 @@ public class ActionButtonUI : MonoBehaviour
         this.baseAction = baseAction;
 
         textMeshPro.text = baseAction.GetActionName().ToUpper();
-        Debug.Log(baseAction.GetActionName().ToUpper());
 
         button.onClick.AddListener(() =>
         {
