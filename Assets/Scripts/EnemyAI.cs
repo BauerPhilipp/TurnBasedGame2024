@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
@@ -27,11 +26,13 @@ public class EnemyAI : MonoBehaviour
         TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
     }
 
-
     private void Update()
     {
-        if (TurnSystem.Instance.IsPlayerTurn()) { return; }
- 
+        if (TurnSystem.Instance.IsPlayerTurn())
+        {
+            return;
+        }
+
         switch (state)
         {
             case State.WaitingForEnemyTurn:
@@ -46,6 +47,7 @@ public class EnemyAI : MonoBehaviour
                     }
                     else
                     {
+                        // No more enemies have actions they can take, end enemy turn
                         TurnSystem.Instance.NextTurn();
                     }
                 }
@@ -67,7 +69,7 @@ public class EnemyAI : MonoBehaviour
         {
             state = State.TakingTurn;
             timer = 2f;
-        }      
+        }
     }
 
     private bool TryTakeEnemyAIAction(Action onEnemyAIActionComplete)
@@ -75,9 +77,8 @@ public class EnemyAI : MonoBehaviour
         Debug.Log("Take Enemy AI Action");
         foreach (Unit enemyUnit in UnitManager.Instance.GetEnemyUnitList())
         {
-            if(TryTakeEnemyAIAction(enemyUnit, onEnemyAIActionComplete))
+            if (TryTakeEnemyAIAction(enemyUnit, onEnemyAIActionComplete))
             {
-                TryTakeEnemyAIAction(enemyUnit, onEnemyAIActionComplete);
                 return true;
             }
         }
@@ -95,6 +96,7 @@ public class EnemyAI : MonoBehaviour
         {
             return false;
         }
+
         if (!enemyUnit.TrySpendActionPointsToTakeAction(spinAction))
         {
             return false;
@@ -104,4 +106,5 @@ public class EnemyAI : MonoBehaviour
         spinAction.TakeAction(actionGridPosition, onEnemyAIActionComplete);
         return true;
     }
+
 }
